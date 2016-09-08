@@ -1,0 +1,141 @@
+﻿<!DOCTYPE html>
+<html ng-csp ng-app="TopGit.UI">
+<head>
+    <title>StarWars</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-animate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-aria.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular-resource.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.1/angular-material.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/normalize/4.2.0/normalize.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/angular-material/1.1.1/angular-material.min.css" rel="stylesheet" />
+    <link href="dist/css/app.min.css" rel="stylesheet" />
+    <script src="app.js"></script>
+</head>
+<body class="{{main.activeColorMode.colorId}}" ng-controller="TopGit.UI.MainController as main" ng-cloak>
+    <div class="stars-bg-xs"></div>
+    <div class="stars-bg-md"></div>
+    <div class="stars-bg-lg"></div>
+    <div class="panel" ng-show="main.showAppPanel">
+        <div class="panel-profile-data">
+            <div class="panel-picture-container">
+                <ng-include src="'starWarsSvg.html'"></ng-include>
+            </div>
+            <div class="panel-action-container">
+                <div class="pull-right">
+                    <button class="panel-action-container-btn" ng-show="main.initialized == true" ng-click="main.addStar()"><span class="glyphicon glyphicon-plus"></span><span class="text">Add Star</span></button>
+                    <button class="panel-action-container-btn" ng-show="main.initialized == true" ng-click="main.openAppDataPanel()"><span class="glyphicon glyphicon-list"></span><span class="text">Stats</span></button>
+                    <button class="panel-action-container-btn" ng-click="main.openAppSettingsPanel()"><span class="glyphicon glyphicon-cog"></span><span class="text">Settings</span></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="content" id="deathStarsContainer" ng-class="{'panelActive': main.showPanel}" ng-attr-starsize="{{main.size}}">
+        <div class="content-start-play" ng-show="!main.showPanel">
+            <ng-include src="'starWarsSvg.html'"></ng-include>
+            <button class="content-start-play-btn" id="mainStartPlayBtn"ng-click="main.startPlay()">Start</button>
+        </div>        
+        <div class="content-help" ng-show="main.showHelpPanel">
+            <div class="content-help-overlay"></div>
+            <div class="content-help-data">
+                <img src="defHelp.jpg" alt="help imge" />
+                <label>Get into the perfect position and shoot down all the death stars!</label>
+                <button class="content-help-data-btn" ng-click="main.showHelpPanel = false;">OK</button>
+            </div>            
+        </div>
+        <label class="content-destroyed-holder" id="destroyedIdHolder"></label>
+    </div>
+    <div class="content-pane" ng-show="main.showAppData">
+        <div class="content-pane-close" ng-click="main.closeAppDataPanel()">
+            <span class="glyphicon glyphicon-remove"></span>
+        </div>
+        <label class="content-pane-title">Death Stars Log</label>
+        <div class="clearfix"></div>
+        <div class="content-pane-data">
+            <md-content class="content-pane-data-tabs">
+                <md-tabs md-dynamic-height="" md-border-bottom="">                    
+                    <md-tab label="Active ( {{main.getActiveCount()}} )">
+                        <md-content class="md-padding">
+                            <div class="content-pane-data-list">
+                                <div class="content-pane-data-list-item" ng-repeat="star in (main.stars | filter: { active : true}) track by $index">
+                                    <label ng-bind="star.id"></label>
+                                    <div class="content-pane-data-list-item-remove" ng-click="main.destroyStar(star.id)" ng-show="star.active == true"><span class="glyphicon glyphicon-trash"></span></div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </md-content>
+                    </md-tab>
+                    <md-tab label="Destroyed ( {{main.getDestroyedCount()}} )">
+                        <md-content class="md-padding">
+                            <div class="content-pane-data-list">
+                                <div class="content-pane-data-list-item" ng-repeat="star in (main.stars | filter: { active : false}) track by $index">
+                                    <label ng-bind="star.id"></label>
+                                    <div class="content-pane-data-list-item-remove" ng-click="main.destroyStar(star.id)" ng-show="star.active == true"><span class="glyphicon glyphicon-trash"></span></div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </md-content>
+                    </md-tab>
+                    <md-tab label="All ( {{main.stars.length}} )">
+                        <md-content class="md-padding">
+                            <div class="content-pane-data-list">
+                                <div class="content-pane-data-list-item" ng-repeat="star in main.stars track by $index">
+                                    <label ng-bind="star.id"></label>
+                                    <div class="content-pane-data-list-item-remove" ng-click="main.destroyStar(star.id)" ng-show="star.active == true"><span class="glyphicon glyphicon-trash"></span></div>
+                                    <div class="clearfix"></div>
+                                </div>
+                            </div>
+                        </md-content>
+                    </md-tab>
+                </md-tabs>
+            </md-content>
+            <div class="clearfix"></div>            
+        </div>
+    </div>
+    <div class="content-pane" ng-show="main.showAppSettings">
+        <div class="content-pane-close" ng-click="main.closeAppSettingsPanel()">
+            <span class="glyphicon glyphicon-remove"></span>
+        </div>
+        <label class="content-pane-title">Game Settings</label>
+        <div class="clearfix"></div>
+        <div class="content-pane-data settings">
+            <div class="color-switcher content-pane-data-item">
+                <div class="theme-switcher accent-picker">
+                    <label class="content-settings-data-item-label">Death Star Chrome</label>
+                    <div class="settings-color-picker" ng-show="main.settingsPaneColorsInitalized">
+                        <div class="color-originator"></div>
+                        <div class="color-plate" ng-repeat="color in main.shownColorModes" ng-style="{
+                'background-color':color.code,
+                'z-index': main.shownColorModes.length - $index,
+                'transition':color.transition}" ng-attr-id="color_{{color.colorId}}"
+                             ng-click="main.choseColor(color)"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="content-pane-data-item pad-b-15">
+                <label class="content-pane-data-item-label">Randomize All Chromes</label>
+                <md-switch-container>
+                    <md-switch ng-model="main.randomChrome" ng-change="main.randomizeChrome()" aria-label="randomize all chromes"></md-switch>
+                </md-switch-container>
+            </div>
+            <div class="content-pane-data-item pad-b-15">
+                <label class="content-pane-data-item-label">Death Star Size</label>
+                <md-slider-container>
+                    <md-slider min="50" max="150" step="5" ng-model="main.size" aria-label="Size" id="size-slider"></md-slider>
+                </md-slider-container>
+            </div>            
+            <div class="content-pane-data-item pad-b-15">
+                <label class="content-pane-data-item-label">Max. Transition Gap</label>
+                <md-slider-container>
+                    <md-slider min="1000" max="10000" step="100" ng-model="main.sliderTimer" ng-change="main.sliderTimerChange()" aria-label="Opacity" id="opacity-slider"></md-slider>
+                </md-slider-container>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
