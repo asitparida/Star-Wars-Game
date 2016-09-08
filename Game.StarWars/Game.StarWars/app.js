@@ -149,6 +149,7 @@
         self.sliderTimerMax = 10000;
         self.size = 80;
         self.randomChrome = false;
+        self.randomSize = false;
         self.showHelpPanel = false;
 
         self.timeout(function () {
@@ -168,6 +169,36 @@
         /// <summary>AUDIO OBJECT TO PLAY THE BLAST SOUND WHEN DESTROYING A STAR</summary>
         self.blastSound = new Audio('bomb.mp3');
 
+    }
+
+    /// <summary>(UN)/RANDOMIZING THE SIZES FOR THE DEATH STARS</summary>
+    MainController.prototype.randomizeSize = function () {
+        var self = this;
+        if (self.randomSize) {
+            var sizes = [];
+            for (var i = 50; i <= 150; i = i + 5) {
+                sizes.push(i);
+            }
+            angular.forEach(self.stars, function (star) {
+                star.instance.classList.add('ind-star-size');
+                star.instance.classList.add('size-transition');
+                var _size = sizes[Math.floor(Math.random() * sizes.length)];
+                star.instance.setAttribute("indstarsize", _size);
+                self.timeout(function () {
+                    star.instance.classList.remove('size-transition');
+                }, 300);
+            });
+        }
+        else {
+            angular.forEach(self.stars, function (star) {
+                star.instance.classList.add('size-transition');
+                star.instance.classList.remove('ind-star-size');
+                star.instance.removeAttribute("indstarsize");
+                self.timeout(function () {
+                    star.instance.classList.remove('size-transition');
+                }, 300);
+            });
+        }
     }
 
     /// <summary>(UN)/RANDOMIZING THE CHROMES FOR THE DEATH STARS</summary>
@@ -350,7 +381,7 @@
     }
 
     /// <summary>ACTIVATING A STAR, IKNVOKING ANIMATION AFTER PAINT COMPLETE</summary>
-    MainController.prototype.activateStar = function (_newStar , ms) {
+    MainController.prototype.activateStar = function (_newStar, ms) {
         var self = this;
         var _container = angular.element(document.getElementById('deathStarsContainer'));
         var _starTmpl = '<div class="death-star" id="UNIQ_STAR_ID"><div class="death-star-bg"></div><div class="death-star-mark" tabindex="-1" ng-click="main.destroyStar(\'UNIQ_STAR_ID\')"><div class="death-star-mark-bg"></div></div><div class="death-star-mark-shell" ng-click="main.destroyStar(\'UNIQ_STAR_ID\')"></div></div>';
@@ -361,7 +392,7 @@
             self.compile(angular.element(_newStar.instance).contents())(self.scope);
             _newStar.translateY = (Math.random() * (self.containerProps.height - 200));
             _newStar.translateX = (Math.random() * (self.containerProps.width - 200));
-            _newStar.instance.style.transform = 'translate(' + + _newStar.translateX + 'px, ' + _newStar.translateY + 'px)';
+            _newStar.instance.style.transform = 'translate(' + +_newStar.translateX + 'px, ' + _newStar.translateY + 'px)';
             angular.element(_newStar.instance).find('.death-star-mark').mouseenter(function (e) {
                 $(e.target).closest('.death-star').addClass('hovered');
             }).mouseleave(function (e) {

@@ -130,6 +130,12 @@
                 </md-slider-container>
             </div>            
             <div class="content-pane-data-item pad-b-15">
+                <label class="content-pane-data-item-label">Randomize All Sizes</label>
+                <md-switch-container>
+                    <md-switch ng-model="main.randomSize" ng-change="main.randomizeSize()" aria-label="randomize all sizes"></md-switch>
+                </md-switch-container>
+            </div>
+            <div class="content-pane-data-item pad-b-15">
                 <label class="content-pane-data-item-label">Max. Transition Gap</label>
                 <md-slider-container>
                     <md-slider min="1000" max="10000" step="100" ng-model="main.sliderTimer" ng-change="main.sliderTimerChange()" aria-label="Opacity" id="opacity-slider"></md-slider>

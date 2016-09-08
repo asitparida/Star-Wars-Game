@@ -668,6 +668,21 @@ body {
             transition: background 1s ease-in-out 0s;
             cursor: crosshair;
 
+            &.size-transition {
+                transition: width 0.3s ease-in-out 0s, height 0.3s ease-in-out 0s !important;
+            }
+
+            $j: 50;
+
+            @while $j <= 150 {
+                &.ind-star-size[indstarsize="#{$j}"] {
+                    width: #{$j}px !important;
+                    height: #{$j}px !important;
+                }
+
+                $j: $j + 5;
+            }
+
             &.hovered {
                 outline: 2px dotted #e74c3c;
             }
@@ -703,7 +718,7 @@ body {
                 opacity: 1;
             }
 
-            &.move-anim{
+            &.move-anim {
                 transition: transform 1s ease-in-out 0s;
             }
 
